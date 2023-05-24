@@ -1,0 +1,11 @@
+{
+  "name": "45 Second Shot Clock",
+  "short_name": "Shot Clock",
+  "start_url": "https://DomainName",
+  "display": "standalone",
+  "icons": [{
+    "src": "apple-touch-icon.png",
+    "sizes": "100x100",
+    "type": "image/png"
+  }]
+}

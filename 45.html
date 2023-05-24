@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>45 Second Shot Clock</title>
+  <meta charset="UTF-8">
+  <meta property="og:title" content="45 Second Shot Clock"/>
+  <meta name="description" content="International Rules 45 Second Shot Clock | 5 4 3 2 1 countdown">
+  <meta name="keywords" content="International Rules,45,Shot Clock">
+  <meta name="author" content="Gregg Ding">
+  <meta property="og:url" content="https://eightball.app/45/"/>
+  <meta property="og:image" content="https://eightball.app/flags/australia-flag-au.png"/>
+  <link rel="apple-touch-icon" href="/hourglass.png">
+  <link rel="manifest" href="/manifest.json">
+
+    <!-- Import Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .flash {
+            animation: flash 1s linear infinite; /* add flashing animation */
+            color: red; /* change color of countdown digits */
+        }
+
+        @keyframes flash {
+            50% {
+                opacity: 0;
+            }
+        }
+
+   
+
+        .img{
+
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            row-gap: 8px;
+            column-gap: 8px;
+            margin-top: 2px;
+
+}
+
+  footer {
+    display:flex;
+    background-color: rgb(200, 200, 200);
+    position:relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    width: 100%;
+    border-top: 1px solid white;
+    justify-content:center;
+       align-items:center;
+     
+    
+    }
+     
+     .copyright {
+       color: rgb(7, 7, 7);
+       font-size: 16px;
+    margin:auto;
+     }
+     
+     .address {
+       color: rgb(3, 3, 3);
+       font-size: 18px;
+     margin:auto;
+     }
+    </style>
+</head>
+<body class="text-center">
+<!--p><strong>bInternational Rules </strong>45 Second Shot Clock | Beeps from <strong>5 4 3 2 1</strong> then buzzer at 0.</p-->
+
+<div class="font-bold py-0" style="font-size: 30rem;">
+    <!-- Countdown -->
+    <span id="countdown">45</span>
+</div>
+<div class="flex justify-center py-2">
+<div class="font-bold py-2" style="font-size: 4rem;">
+		
+		<!-- Reset button -->
+		<button id="reset" class="px-16 py-8 bg-blue-600 text-white font-bold rounded-full">Reset</button>
+		
+		<!-- Unused buttons used as space -->
+		<button id="" class="px-4 py-8 bg-white-500 text-white font-bold rounded-full ml-2"></button>
+   
+		<!-- Start button -->
+		<button id="start" class="px-16 py-8 bg-green-500 text-white font-bold rounded-full ml-2">Start</button>
+
+</div>
+</div>
+<div class="flex justify-center py-2">
+<div class="font-bold py-8" style="font-size: 4rem;">
+
+        <!-- EXT button for player 1 -->
+        <button id="ext-1" class="px-16 py-8 bg-red-800 text-white font-bold rounded-full ml-2">Red X</button>
+        
+		<!-- Unused buttons used as space -->
+        <button id="" class="px-4 py-8 bg-white-500 text-white font-bold rounded-full ml-2"></button>
+        
+        <!-- EXT button for player 2 -->
+        <button id="ext-2" class="px-16 py-8 bg-yellow-400 text-white font-bold rounded-full ml-2">Yell X</button>
+
+</div>
+</div>
+<div class="flex justify-center py-2">
+<div class="font-bold py-8" style="font-size: 4rem;">
+
+        <!-- Reset All button -->
+        <button id="reset-all" class="px-16 py-8 bg-gray-800 text-white font-bold rounded-full ml-2">Reset All</button>
+</div>
+</div>
+
+	<script>
+function preventBehavior(e) {
+    e.preventDefault(); 
+};
+
+document.addEventListener("touchmove", preventBehavior, {passive: false});
+
+    const countdown = document.getElementById("countdown");
+    const resetButton = document.getElementById("reset");
+    const startButton = document.getElementById("start");
+    const ext1Button = document.getElementById("ext-1");
+    const ext2Button = document.getElementById("ext-2");
+    const resetAllButton = document.getElementById("reset-all");
+
+    const countdownLimit = 45;
+    let startTime = 0;
+    let lastCountdown = countdownLimit * 1000;
+    let interval; // declare interval variable
+    let countdownStarted = false; // boolean variable to track if countdown has started or not
+    countdown.textContent = countdownLimit;
+
+    function resetCountdown() {
+        sound.pause()
+        countdown.textContent = countdownLimit;
+        clearInterval(interval)
+        startButton.textContent = "Start";
+        countdownStarted = false;
+        lastCountdown = countdownLimit * 1000;
+        countdown.classList.remove("flash"); // add flash class to countdown element
+    }
+
+    const sound = new Audio("6seconds.wav"); // create new audio element for beep sound
+    function displayMs(s) {
+        return Math.ceil(Math.max(s, 0) / 1000);
+    }
+    function startCountdown() {
+        if (startButton.textContent === "Start") {
+            countdownStarted = true; // set countdownStarted to true when countdown starts
+            // Get today's date and time
+            startTime = new Date().getTime() + lastCountdown;
+            interval = setInterval(() => {
+                let countdownValue = startTime - Date.now();
+                if (countdownValue <= 0) {
+                    clearInterval(interval);
+                } else if (countdownValue <= 5 * 1000 && !countdown.classList.contains("flash")) {
+                    countdown.classList.add("flash"); // add flash class to countdown element
+                    sound.currentTime = 0;
+                    sound.play(); // play beep sound
+                }
+                countdown.textContent = displayMs(countdownValue);
+            }, 10);
+            startButton.textContent = "Pause";
+        } else {
+            clearInterval(interval);
+            lastCountdown = startTime - Date.now()
+
+            startButton.textContent = "Start";
+        }
+    }
+
+    function addTime(button) {
+        if (button.disabled || !countdownStarted) { // only allow button to be clicked if countdown has not started
+            return;
+        }
+        startTime += 15 * 1000;
+        let countdownValue = startTime - Date.now();
+
+        if (countdownValue > 5 * 1000) {
+            sound.pause(); // play beep sound
+            countdown.classList.remove("flash"); // remove flash class from countdown element
+            button.classList.add("bg-gray-500"); // add flash class to countdown element
+        }
+        button.disabled = true;
+        countdown.textContent = displayMs(countdownValue);
+    }
+
+    resetButton.addEventListener("click", resetCountdown);
+    startButton.addEventListener("click", () => {
+        startCountdown();
+        sound.play();
+        sound.pause()
+    });
+    ext1Button.addEventListener("click", () => addTime(ext1Button));
+    ext2Button.addEventListener("click", () => addTime(ext2Button));
+    resetAllButton.addEventListener("click", () => {
+        resetCountdown();
+        ext1Button.disabled = false;
+        ext2Button.disabled = false;
+        ext1Button.classList.remove("bg-gray-500");
+        ext2Button.classList.remove("bg-gray-500");
+    });
+
+    </script>
+
+  </body>
+
+</html>
